@@ -1,0 +1,10 @@
+{
+  "name": "Jastipku",
+  "short_name": "Jastipku",
+  "description": "Travel-based purchase assistance for customers and travelers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f2ea",
+  "theme_color": "#1f2937",
+  "icons": []
+}

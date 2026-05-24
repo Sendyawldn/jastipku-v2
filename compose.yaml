@@ -1,0 +1,106 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: jastipku
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d jastipku"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  api:
+    build:
+      context: ./jastipku-api
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/jastipku?schema=public
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./jastipku-api/src
+          target: /app/src
+        - action: sync+restart
+          path: ./jastipku-api/prisma
+          target: /app/prisma
+        - action: rebuild
+          path: ./jastipku-api/package.json
+
+  web:
+    build:
+      context: ./jastipku-web
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_BASE_URL: http://api:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./jastipku-web/src
+          target: /app/src
+        - action: sync+restart
+          path: ./jastipku-web/public
+          target: /app/public
+        - action: rebuild
+          path: ./jastipku-web/package.json
+
+  admin:
+    build:
+      context: ./jastipku-admin
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_BASE_URL: http://api:3001
+    ports:
+      - "3002:3002"
+    depends_on:
+      api:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./jastipku-admin/src
+          target: /app/src
+        - action: sync+restart
+          path: ./jastipku-admin/public
+          target: /app/public
+        - action: rebuild
+          path: ./jastipku-admin/package.json
+
+volumes:
+  postgres-data:
+  redis-data:

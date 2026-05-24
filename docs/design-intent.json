@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "status": "seed-generated-during-init",
+  "conceptualAnchor": {
+    "anchorReference": "custody chain ledger for trip-based purchases",
+    "realWorldSignal": "stamped travel manifests, receipt packets, and settlement trails",
+    "whyItFits": "The product is about trusted handoffs, order progression, and settlement across customer, traveler, and admin roles."
+  },
+  "derivedTokenLogic": {
+    "surfaceBase": "warm paper neutrals with graphite text",
+    "statusAccents": ["teal", "ember", "olive"],
+    "spacingPolicy": "compact on admin surfaces, more breathing room in customer and traveler views",
+    "radiusPolicy": "restrained by default, not uniformly soft",
+    "motionPolicy": "document handoff motion with status transitions that expand into focused detail views"
+  },
+  "motionPaletteDecision": {
+    "realWorldAnchor": "travel manifests and settlement ledgers",
+    "signatureMotion": "compact rows expand into a detail panel when a trip, order, or withdrawal needs attention",
+    "typographicRoleContrast": "editorial section headings against compact neutral body copy",
+    "paletteSummary": "paper, graphite, teal, ember, and olive"
+  },
+  "designFlexibilityPolicy": {
+    "locked": [
+      "product goals",
+      "accessibility",
+      "state visibility",
+      "mobile-first recomposition"
+    ],
+    "openUntilImplementation": [
+      "exact font families",
+      "final token values",
+      "shadow depth",
+      "final radius scale"
+    ]
+  },
+  "researchDossier": {
+    "metadata": {
+      "researchVerifiedAt": null,
+      "freshnessWindowDays": 90,
+      "antiRepeatLedger": [
+        "generic dashboard shell",
+        "admin control room metaphor",
+        "minimal card-grid landing page",
+        "wallpaper decoration without function",
+        "purple-gradient product default"
+      ]
+    }
+  },
+  "libraryResearchStatus": "seeded",
+  "libraryDecisions": [
+    {
+      "surface": "jastipku-web",
+      "decision": "Use Next.js App Router with Tailwind CSS as the baseline implementation stack.",
+      "reason": "The product needs SSR-friendly customer and traveler flows with strong mobile-first composition."
+    },
+    {
+      "surface": "jastipku-admin",
+      "decision": "Use Next.js App Router with shadcn/ui on top of Tailwind CSS.",
+      "reason": "The admin panel needs fast composition of operational tables, forms, dialogs, and evidence surfaces."
+    },
+    {
+      "surface": "shared-ui-policy",
+      "decision": "Keep visual language product-specific rather than relying on a generic dashboard kit look.",
+      "reason": "The three surfaces have distinct jobs and should not collapse into one interchangeable shell."
+    }
+  ],
+  "aiSafeUiAudit": {
+    "blockedPatterns": [
+      "generic dashboard chrome",
+      "decorative background noise",
+      "palette-only redesigns",
+      "state-less empty shells"
+    ],
+    "requiredSignals": [
+      "role-specific hierarchy",
+      "visible status progression",
+      "mobile-to-desktop recomposition"
+    ]
+  },
+  "designExecutionPolicy": {
+    "mobileFirst": true,
+    "stateCoverage": [
+      "default",
+      "hover",
+      "focus-visible",
+      "active",
+      "disabled",
+      "loading",
+      "empty",
+      "error",
+      "success"
+    ],
+    "accessibilityFloor": "WCAG 2.2 AA"
+  },
+  "designExecutionHandoff": {
+    "customerApp": "discovery and order creation",
+    "travelerApp": "trip management and fulfillment",
+    "adminApp": "verification, financial review, and exception handling"
+  },
+  "reviewRubric": {
+    "renameTest": "The UI should not be renameable to another product category without changing composition, palette, iconography, and motion language.",
+    "stateClarity": "Every data surface must show loading, empty, stale, and error states distinctly.",
+    "motionFit": "Motion must serve handoff and status visibility, not decoration."
+  },
+  "contextHygiene": {
+    "allowedSources": [
+      "current repo evidence",
+      "current brief",
+      "current docs"
+    ],
+    "blockedSources": [
+      "old project visual memory",
+      "unused screenshots",
+      "generic design defaults"
+    ]
+  }
+}

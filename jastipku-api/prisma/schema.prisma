@@ -1,0 +1,236 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  TRAVELER
+  CUSTOMER
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum OrderStatus {
+  PENDING_ACCEPTANCE
+  PENDING_PAYMENT
+  PROCESSING
+  SHIPPING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum WithdrawalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+enum TransactionType {
+  PAYMENT_IN
+  PAYMENT_OUT
+  FEE
+  WITHDRAWAL
+  REVENUE
+}
+
+model User {
+  id              Int              @id @default(autoincrement())
+  email           String           @unique
+  name            String
+  password        String
+  role            UserRole         @default(CUSTOMER)
+  profilePhotoUrl String?
+  balance         Decimal          @default(0) @db.Decimal(14, 2)
+  currencyCode    String           @default("IDR") @db.Char(3)
+  averageRating   Float?
+  createdAt       DateTime         @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime         @updatedAt @db.Timestamptz(3)
+
+  travelerProfile TravelerProfile?
+  trips           Trip[]
+  customerOrders  Order[]          @relation("CustomerOrders")
+  travelerOrders  Order[]          @relation("TravelerOrders")
+  withdrawals     Withdrawal[]
+  reviewsGiven    Review[]         @relation("ReviewsGiven")
+  reviewsReceived Review[]         @relation("ReviewsReceived")
+  chatMessages    ChatMessage[]
+  transactions    Transaction[]
+
+  @@index([role])
+}
+
+model TravelerProfile {
+  id                  Int                 @id @default(autoincrement())
+  userId              Int                 @unique
+  idCardNumber        String
+  idCardImageUrl      String
+  bankName            String
+  bankAccountNumber   String
+  bankAccountName     String
+  verificationStatus  VerificationStatus  @default(PENDING)
+  verifiedAt          DateTime?           @db.Timestamptz(3)
+  rejectionReason     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Trip {
+  id              Int       @id @default(autoincrement())
+  travelerId      Int
+  originCity      String
+  destinationCity String
+  departureDate   DateTime  @db.Timestamptz(3)
+  arrivalDate     DateTime  @db.Timestamptz(3)
+  description     String?
+  createdAt       DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(3)
+
+  traveler User   @relation(fields: [travelerId], references: [id], onDelete: Restrict)
+  orders   Order[]
+
+  @@index([travelerId, departureDate])
+  @@index([destinationCity, departureDate])
+}
+
+model Order {
+  id              Int          @id @default(autoincrement())
+  customerId      Int
+  travelerId      Int
+  tripId          Int
+  status          OrderStatus  @default(PENDING_ACCEPTANCE)
+  totalItemPrice  Decimal      @db.Decimal(14, 2)
+  serviceFee      Decimal      @db.Decimal(14, 2)
+  shippingFee     Decimal?     @db.Decimal(14, 2)
+  totalAmount     Decimal      @db.Decimal(14, 2)
+  currencyCode    String       @default("IDR") @db.Char(3)
+  shippingAddress String
+  trackingNumber  String?
+  createdAt       DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime     @updatedAt @db.Timestamptz(3)
+
+  customer      User           @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: Restrict)
+  traveler      User           @relation("TravelerOrders", fields: [travelerId], references: [id], onDelete: Restrict)
+  trip          Trip           @relation(fields: [tripId], references: [id], onDelete: Restrict)
+  items         OrderItem[]
+  payment       Payment?
+  review        Review?
+  chatMessages  ChatMessage[]
+
+  @@index([customerId, createdAt])
+  @@index([travelerId, status, createdAt])
+  @@index([tripId])
+}
+
+model OrderItem {
+  id              Int      @id @default(autoincrement())
+  orderId         Int
+  productName     String
+  productUrl      String?
+  quantity        Int
+  estimatedPrice  Decimal  @db.Decimal(14, 2)
+  productImageUrl String?
+  notes           String?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  orderId     Int      @unique
+  reviewerId  Int
+  receiverId  Int
+  rating      Int
+  comment     String?
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  order    Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  reviewer User  @relation("ReviewsGiven", fields: [reviewerId], references: [id], onDelete: Restrict)
+  receiver User  @relation("ReviewsReceived", fields: [receiverId], references: [id], onDelete: Restrict)
+}
+
+model Payment {
+  id              Int          @id @default(autoincrement())
+  orderId         Int          @unique
+  xenditInvoiceId String       @unique
+  amount          Decimal      @db.Decimal(14, 2)
+  currencyCode    String       @default("IDR") @db.Char(3)
+  status          String
+  paymentMethod   String?
+  paidAt          DateTime?    @db.Timestamptz(3)
+  createdAt       DateTime     @default(now()) @db.Timestamptz(3)
+
+  order        Order        @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  paymentLogs  PaymentLog[]
+}
+
+model Withdrawal {
+  id             Int              @id @default(autoincrement())
+  travelerId     Int
+  amount         Decimal          @db.Decimal(14, 2)
+  currencyCode   String           @default("IDR") @db.Char(3)
+  status         WithdrawalStatus @default(PENDING)
+  processedAt    DateTime?        @db.Timestamptz(3)
+  rejectionReason String?
+  transactionId  Int?             @unique
+  createdAt      DateTime         @default(now()) @db.Timestamptz(3)
+
+  traveler    User         @relation(fields: [travelerId], references: [id], onDelete: Restrict)
+  transaction Transaction?  @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+
+  @@index([travelerId, status, createdAt])
+}
+
+model PaymentLog {
+  id          Int      @id @default(autoincrement())
+  paymentId   Int
+  rawResponse Json
+  status      String
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+
+  @@index([paymentId, createdAt])
+}
+
+model Transaction {
+  id             Int              @id @default(autoincrement())
+  userId         Int
+  type           TransactionType
+  amount         Decimal          @db.Decimal(14, 2)
+  currencyCode   String           @default("IDR") @db.Char(3)
+  description    String
+  relatedOrderId Int?
+  createdAt      DateTime         @default(now()) @db.Timestamptz(3)
+
+  user       User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  withdrawal Withdrawal?
+
+  @@index([userId, createdAt])
+  @@index([relatedOrderId])
+}
+
+model ChatMessage {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  senderId  Int
+  message   String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  order  Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  sender User  @relation(fields: [senderId], references: [id], onDelete: Restrict)
+
+  @@index([orderId, createdAt])
+}
