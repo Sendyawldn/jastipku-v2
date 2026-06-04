@@ -52,6 +52,7 @@ The workspace now has project docs, a backend API scaffold, two Next.js frontend
 
 ## Useful Commands
 
+- Workspace validation: `npm run validate`
 - API: `cd jastipku-api && npm run start:dev`
 - Web: `cd jastipku-web && npm run dev`
 - Admin: `cd jastipku-admin && npm run dev`
@@ -61,3 +62,4 @@ The workspace now has project docs, a backend API scaffold, two Next.js frontend
 
 - Docker validation is blocked in this WSL environment because the Docker CLI is unavailable.
 - The source trees were checked with workspace diagnostics and diff hygiene after each major scaffold step.
+- The root package.json now exposes the repo-wide validation script expected by the project instructions.

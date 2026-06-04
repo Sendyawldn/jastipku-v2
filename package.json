@@ -1,0 +1,12 @@
+{
+  "name": "jastipku-upgrade-workspace",
+  "private": true,
+  "scripts": {
+    "validate": "npm --prefix jastipku-api run validate && npm --prefix jastipku-web run validate && npm --prefix jastipku-admin run validate",
+    "dev:api": "npm --prefix jastipku-api run start:dev",
+    "dev:web": "npm --prefix jastipku-web run dev",
+    "dev:admin": "npm --prefix jastipku-admin run dev",
+    "compose:up": "docker compose up --watch",
+    "compose:config": "docker compose config"
+  }
+}

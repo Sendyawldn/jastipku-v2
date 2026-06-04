@@ -11,3 +11,8 @@ AGENTS.md
 CLAUDE.md
 GEMINI.md
 mcp.json
+
+# generated app output
+**/node_modules/
+**/.next/
+**/dist/
