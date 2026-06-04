@@ -32,6 +32,7 @@
     "@nestjs/testing": "latest",
     "@types/bcrypt": "latest",
     "@types/node": "latest",
+    "dotenv": "latest",
     "prisma": "latest",
     "ts-node": "latest",
     "tsconfig-paths": "latest",
