@@ -1,4 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { CurrentUser } from "../auth/current-user.decorator";
+import type { JwtPayload } from "../auth/auth.constants";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { Roles } from "../auth/roles.decorator";
 import { RolesGuard } from "../auth/roles.guard";
@@ -17,7 +19,7 @@ export class TripsController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("TRAVELER", "ADMIN")
-  create(@Body() body: CreateTripDto) {
-    return this.tripsService.create(body);
+  create(@Body() body: CreateTripDto, @CurrentUser() actor: JwtPayload) {
+    return this.tripsService.create(body, actor);
   }
 }

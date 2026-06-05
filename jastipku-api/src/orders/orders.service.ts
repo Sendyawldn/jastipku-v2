@@ -1,4 +1,5 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import type { JwtPayload } from "../auth/auth.constants";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { ListOrdersQueryDto } from "./dto/list-orders-query.dto";
@@ -49,11 +50,25 @@ export class OrdersService {
     };
   }
 
-  create(body: CreateOrderDto) {
+  create(body: CreateOrderDto, actor: JwtPayload) {
     return this.prisma.$transaction(async (transaction) => {
+      const customerId = this.resolveCustomerId(body, actor);
+      const trip = await transaction.trip.findUnique({
+        where: { id: body.tripId },
+        select: { travelerId: true },
+      });
+
+      if (!trip) {
+        throw new NotFoundException("Trip not found");
+      }
+
+      if (trip.travelerId !== body.travelerId) {
+        throw new BadRequestException("travelerId must match the selected trip");
+      }
+
       const order = await transaction.order.create({
         data: {
-          customerId: body.customerId,
+          customerId,
           travelerId: body.travelerId,
           tripId: body.tripId,
           status: "PENDING_ACCEPTANCE",
@@ -92,5 +107,17 @@ export class OrdersService {
         },
       });
     });
+  }
+
+  private resolveCustomerId(body: CreateOrderDto, actor: JwtPayload) {
+    if (actor.role === "CUSTOMER") {
+      return actor.sub;
+    }
+
+    if (body.customerId) {
+      return body.customerId;
+    }
+
+    throw new BadRequestException("Admin order creation requires customerId");
   }
 }

@@ -1,4 +1,5 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import type { JwtPayload } from "../auth/auth.constants";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateTripDto } from "./dto/create-trip.dto";
 
@@ -22,10 +23,12 @@ export class TripsService {
     });
   }
 
-  create(body: CreateTripDto) {
+  create(body: CreateTripDto, actor: JwtPayload) {
+    const travelerId = this.resolveTravelerId(body, actor);
+
     return this.prisma.trip.create({
       data: {
-        travelerId: body.travelerId,
+        travelerId,
         originCity: body.originCity,
         destinationCity: body.destinationCity,
         departureDate: body.departureDate,
@@ -33,5 +36,17 @@ export class TripsService {
         description: body.description,
       },
     });
+  }
+
+  private resolveTravelerId(body: CreateTripDto, actor: JwtPayload) {
+    if (actor.role === "TRAVELER") {
+      return actor.sub;
+    }
+
+    if (body.travelerId) {
+      return body.travelerId;
+    }
+
+    throw new BadRequestException("Admin trip creation requires travelerId");
   }
 }

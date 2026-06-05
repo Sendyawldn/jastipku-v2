@@ -1,10 +1,12 @@
 import { Type } from "class-transformer";
-import { IsDate, IsInt, IsOptional, IsString, MinLength } from "class-validator";
+import { IsDate, IsInt, IsOptional, IsString, Min, MinLength } from "class-validator";
 
 export class CreateTripDto {
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
-  travelerId!: number;
+  @Min(1)
+  travelerId?: number;
 
   @IsString()
   @MinLength(2)

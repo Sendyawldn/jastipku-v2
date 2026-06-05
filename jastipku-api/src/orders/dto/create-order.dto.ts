@@ -15,7 +15,8 @@ export class CreateOrderDto {
   @Type(() => Number)
   @IsNumber()
   @Min(1)
-  customerId!: number;
+  @IsOptional()
+  customerId?: number;
 
   @Type(() => Number)
   @IsNumber()

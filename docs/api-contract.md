@@ -39,6 +39,8 @@
 - `GET /trips`
 - `POST /trips`
   - Requires an authenticated `TRAVELER` or `ADMIN` user.
+  - Traveler callers cannot choose `travelerId`; the API uses the authenticated user id.
+  - Admin callers must provide `travelerId` when creating a trip for a traveler.
 - `GET /trips/:id`
 - `PATCH /trips/:id`
 - `DELETE /trips/:id`
@@ -47,6 +49,9 @@
 
 - `POST /orders`
   - Requires an authenticated `CUSTOMER` or `ADMIN` user.
+  - Customer callers cannot choose `customerId`; the API uses the authenticated user id.
+  - Admin callers must provide `customerId` when creating an order for a customer.
+  - `travelerId` must match the selected trip's traveler.
 - `GET /orders`
   - Query parameters: `limit` defaults to `20` and has a maximum of `50`; `cursor` is the previous page's `pageInfo.nextCursor`.
   - Response shape: `{ data: Order[], pageInfo: { limit, nextCursor, hasNextPage } }`.

@@ -1,4 +1,6 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
+import { CurrentUser } from "../auth/current-user.decorator";
+import type { JwtPayload } from "../auth/auth.constants";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { Roles } from "../auth/roles.decorator";
 import { RolesGuard } from "../auth/roles.guard";
@@ -18,7 +20,7 @@ export class OrdersController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("CUSTOMER", "ADMIN")
-  create(@Body() body: CreateOrderDto) {
-    return this.ordersService.create(body);
+  create(@Body() body: CreateOrderDto, @CurrentUser() actor: JwtPayload) {
+    return this.ordersService.create(body, actor);
   }
 }
