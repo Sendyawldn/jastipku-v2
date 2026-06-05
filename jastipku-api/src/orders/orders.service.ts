@@ -1,14 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateOrderDto } from "./dto/create-order.dto";
+import { ListOrdersQueryDto } from "./dto/list-orders-query.dto";
 import { Prisma } from "../prisma/prisma-client";
 
 @Injectable()
 export class OrdersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  list() {
-    return this.prisma.order.findMany({
+  async list(query: ListOrdersQueryDto) {
+    const limit = query.limit ?? 20;
+    const orders = await this.prisma.order.findMany({
+      take: limit + 1,
+      ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       include: {
         items: true,
@@ -31,6 +35,18 @@ export class OrdersService {
         },
       },
     });
+
+    const pageItems = orders.slice(0, limit);
+    const nextOrder = orders.length > limit ? orders[limit] : null;
+
+    return {
+      data: pageItems,
+      pageInfo: {
+        limit,
+        nextCursor: nextOrder?.id ?? null,
+        hasNextPage: nextOrder !== null,
+      },
+    };
   }
 
   create(body: CreateOrderDto) {

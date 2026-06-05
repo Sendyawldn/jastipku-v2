@@ -38,6 +38,9 @@
 
 - `POST /orders`
 - `GET /orders`
+  - Query parameters: `limit` defaults to `20` and has a maximum of `50`; `cursor` is the previous page's `pageInfo.nextCursor`.
+  - Response shape: `{ data: Order[], pageInfo: { limit, nextCursor, hasNextPage } }`.
+  - Empty state: returns an empty `data` array with `hasNextPage: false` and `nextCursor: null`.
 - `GET /orders/:id`
 - `PATCH /orders/:id/accept`
 - `PATCH /orders/:id/reject`

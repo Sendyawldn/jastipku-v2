@@ -6,5 +6,4 @@ export {
   UserRole,
   VerificationStatus,
   WithdrawalStatus,
-} from ".prisma/client/default";
-} from "@prisma/client/default";
+} from "@prisma/client";
