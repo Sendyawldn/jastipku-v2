@@ -47,8 +47,9 @@ The workspace now has project docs, a backend API scaffold, two Next.js frontend
 
 1. Install dependencies inside each app directory.
 2. Copy the relevant `.env.example` files to `.env` where needed.
-3. Start the services with `docker compose up --watch` when Docker is available.
-4. Run the apps directly for local development when you do not need the full Compose stack.
+3. Set `JWT_ACCESS_TOKEN_SECRET` for `jastipku-api`; use a long random value and keep it out of source control.
+4. Start the services with `docker compose up --watch` when Docker is available.
+5. Run the apps directly for local development when you do not need the full Compose stack.
 
 ## Useful Commands
 

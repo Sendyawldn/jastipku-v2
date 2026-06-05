@@ -16,8 +16,15 @@
 
 - `POST /auth/register`
 - `POST /auth/login`
+  - Request body: `{ email, password }`.
+  - Success response: `{ user }` and a `Set-Cookie` header for `jastipku_access_token`.
+  - Cookie attributes: HTTP-only, path `/`, `SameSite=Lax` by default, and `Secure` when `AUTH_COOKIE_SECURE=true`.
+  - Error response: `401` for invalid credentials.
 - `POST /auth/logout`
+  - Clears the `jastipku_access_token` cookie.
 - `GET /auth/me`
+  - Requires a valid `jastipku_access_token` cookie.
+  - Success response: `{ user: { sub, email, role } }`.
 
 ## Users and Profiles
 
