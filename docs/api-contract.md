@@ -5,6 +5,7 @@
 - The API is the system of record for auth, orders, payments, withdrawals, and admin actions.
 - Browser clients use secure HTTP-only cookies for session or JWT transport.
 - Role-based access control is enforced at the API boundary.
+- Role checks do not replace resource ownership checks. Endpoints that mutate user-owned records must add resource-aware authorization before production use.
 - Mutations that cross money or state boundaries must be idempotent where a retry is plausible.
 
 ## Health Endpoints
@@ -37,6 +38,7 @@
 
 - `GET /trips`
 - `POST /trips`
+  - Requires an authenticated `TRAVELER` or `ADMIN` user.
 - `GET /trips/:id`
 - `PATCH /trips/:id`
 - `DELETE /trips/:id`
@@ -44,6 +46,7 @@
 ## Orders
 
 - `POST /orders`
+  - Requires an authenticated `CUSTOMER` or `ADMIN` user.
 - `GET /orders`
   - Query parameters: `limit` defaults to `20` and has a maximum of `50`; `cursor` is the previous page's `pageInfo.nextCursor`.
   - Response shape: `{ data: Order[], pageInfo: { limit, nextCursor, hasNextPage } }`.
