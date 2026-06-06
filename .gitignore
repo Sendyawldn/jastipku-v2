@@ -17,3 +17,5 @@ mcp.json
 **/.next/
 **/dist/
 **/*.tsbuildinfo
+
+.kilo
