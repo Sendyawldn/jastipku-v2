@@ -1,5 +1,11 @@
-import type { UserRole } from "@prisma/client";
-import { IsEmail, IsIn, IsOptional, IsString, MinLength } from "class-validator";
+import type { UserRole } from "../../prisma/prisma-client";
+import {
+  IsEmail,
+  IsIn,
+  IsOptional,
+  IsString,
+  MinLength,
+} from "class-validator";
 
 const allowedRoles: UserRole[] = ["ADMIN", "TRAVELER", "CUSTOMER"];
 

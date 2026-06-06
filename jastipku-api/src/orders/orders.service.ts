@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateOrderDto } from "./dto/create-order.dto";
+import { Prisma } from "../prisma/prisma-client";
 
 @Injectable()
 export class OrdersService {
@@ -43,7 +43,9 @@ export class OrdersService {
           status: "PENDING_ACCEPTANCE",
           totalItemPrice: new Prisma.Decimal(body.totalItemPrice),
           serviceFee: new Prisma.Decimal(body.serviceFee),
-          shippingFee: body.shippingFee ? new Prisma.Decimal(body.shippingFee) : null,
+          shippingFee: body.shippingFee
+            ? new Prisma.Decimal(body.shippingFee)
+            : null,
           totalAmount: new Prisma.Decimal(body.totalAmount),
           currencyCode: body.currencyCode ?? "IDR",
           shippingAddress: body.shippingAddress,
