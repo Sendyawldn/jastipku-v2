@@ -9,9 +9,18 @@ import { Prisma } from "../prisma/prisma-client";
 export class OrdersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async list(query: ListOrdersQueryDto) {
+  async list(query: ListOrdersQueryDto, actor: JwtPayload) {
     const limit = query.limit ?? 20;
+
+    let whereClause: Prisma.OrderWhereInput = {};
+    if (actor.role === "CUSTOMER") {
+      whereClause.customerId = actor.sub;
+    } else if (actor.role === "TRAVELER") {
+      whereClause.travelerId = actor.sub;
+    }
+
     const orders = await this.prisma.order.findMany({
+      where: whereClause,
       take: limit + 1,
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -120,4 +129,46 @@ export class OrdersService {
 
     throw new BadRequestException("Admin order creation requires customerId");
   }
+
+  getById(id: number, actor: JwtPayload) {
+    return this.prisma.order.findFirstOrThrow({
+      where: {
+        id,
+        ...(actor.role === "CUSTOMER" ? { customerId: actor.sub } : {}),
+        ...(actor.role === "TRAVELER" ? { travelerId: actor.sub } : {}),
+      },
+      include: {
+        items: true,
+        payment: true,
+        review: true,
+        trip: true,
+      },
+    });
+  }
+
+  async updateStatus(id: number, status: string, actor: JwtPayload) {
+    const order = await this.prisma.order.findUniqueOrThrow({ where: { id } });
+
+    if (actor.role === "CUSTOMER") {
+      if (order.customerId !== actor.sub) {
+        throw new BadRequestException("Not allowed to update this order");
+      }
+      // Customer can confirm receipt (COMPLETED) or CANCEL if pending
+      if (status !== "COMPLETED" && status !== "CANCELLED") {
+        throw new BadRequestException("Customer can only COMPLETE or CANCEL");
+      }
+    } else if (actor.role === "TRAVELER") {
+      if (order.travelerId !== actor.sub) {
+        throw new BadRequestException("Not allowed to update this order");
+      }
+      // Traveler can accept (PENDING_PAYMENT), processing, shipping, or cancel
+    }
+
+    // Since OrderStatus is an enum, we need to cast it or let prisma handle it
+    return this.prisma.order.update({
+      where: { id },
+      data: { status: status as any },
+    });
+  }
 }
+

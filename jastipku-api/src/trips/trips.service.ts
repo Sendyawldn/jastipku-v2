@@ -49,4 +49,41 @@ export class TripsService {
 
     throw new BadRequestException("Admin trip creation requires travelerId");
   }
+
+  getById(id: number) {
+    return this.prisma.trip.findUniqueOrThrow({
+      where: { id },
+      include: {
+        traveler: {
+          select: {
+            id: true,
+            name: true,
+            profilePhotoUrl: true,
+            averageRating: true,
+          },
+        },
+      },
+    });
+  }
+
+  async update(id: number, body: any, actor: JwtPayload) {
+    const trip = await this.prisma.trip.findUniqueOrThrow({ where: { id } });
+    if (actor.role !== "ADMIN" && trip.travelerId !== actor.sub) {
+      throw new BadRequestException("You can only edit your own trips");
+    }
+    return this.prisma.trip.update({
+      where: { id },
+      data: body,
+    });
+  }
+
+  async delete(id: number, actor: JwtPayload) {
+    const trip = await this.prisma.trip.findUniqueOrThrow({ where: { id } });
+    if (actor.role !== "ADMIN" && trip.travelerId !== actor.sub) {
+      throw new BadRequestException("You can only delete your own trips");
+    }
+    return this.prisma.trip.delete({
+      where: { id },
+    });
+  }
 }
