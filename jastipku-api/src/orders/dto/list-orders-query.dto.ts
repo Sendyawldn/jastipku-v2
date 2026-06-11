@@ -1,17 +1,6 @@
-import { Type } from "class-transformer";
-import { IsInt, IsOptional, Max, Min } from "class-validator";
+import { PaginationDto } from "../../common/dto/pagination.dto";
 
-export class ListOrdersQueryDto {
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @Max(50)
-  limit = 20;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  cursor?: number;
+export class ListOrdersQueryDto extends PaginationDto {
+  // Inherits limit/take and cursor from PaginationDto
+  // Note: we can map limit to take if needed, but PaginationDto uses take and cursor.
 }

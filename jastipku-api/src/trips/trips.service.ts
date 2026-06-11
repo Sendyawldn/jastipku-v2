@@ -2,13 +2,28 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import type { JwtPayload } from "../auth/auth.constants";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateTripDto } from "./dto/create-trip.dto";
+import { ListTripsQueryDto } from "./dto/list-trips-query.dto";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class TripsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  list() {
-    return this.prisma.trip.findMany({
+  async list(query: ListTripsQueryDto) {
+    const take = query.take ?? 20;
+
+    let whereClause: Prisma.TripWhereInput = {};
+    if (query.originCity) {
+      whereClause.originCity = { contains: query.originCity, mode: 'insensitive' };
+    }
+    if (query.destinationCity) {
+      whereClause.destinationCity = { contains: query.destinationCity, mode: 'insensitive' };
+    }
+
+    const trips = await this.prisma.trip.findMany({
+      where: whereClause,
+      take: take + 1,
+      ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       orderBy: [{ departureDate: "asc" }, { id: "asc" }],
       include: {
         traveler: {
@@ -21,6 +36,18 @@ export class TripsService {
         },
       },
     });
+
+    const pageItems = trips.slice(0, take);
+    const nextTrip = trips.length > take ? trips[take] : null;
+
+    return {
+      data: pageItems,
+      pageInfo: {
+        take,
+        nextCursor: nextTrip?.id ?? null,
+        hasNextPage: nextTrip !== null,
+      },
+    };
   }
 
   create(body: CreateTripDto, actor: JwtPayload) {

@@ -10,7 +10,7 @@ export class OrdersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async list(query: ListOrdersQueryDto, actor: JwtPayload) {
-    const limit = query.limit ?? 20;
+    const take = query.take ?? 20;
 
     let whereClause: Prisma.OrderWhereInput = {};
     if (actor.role === "CUSTOMER") {
@@ -21,7 +21,7 @@ export class OrdersService {
 
     const orders = await this.prisma.order.findMany({
       where: whereClause,
-      take: limit + 1,
+      take: take + 1,
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       include: {
@@ -46,13 +46,13 @@ export class OrdersService {
       },
     });
 
-    const pageItems = orders.slice(0, limit);
-    const nextOrder = orders.length > limit ? orders[limit] : null;
+    const pageItems = orders.slice(0, take);
+    const nextOrder = orders.length > take ? orders[take] : null;
 
     return {
       data: pageItems,
       pageInfo: {
-        limit,
+        take,
         nextCursor: nextOrder?.id ?? null,
         hasNextPage: nextOrder !== null,
       },

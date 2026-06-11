@@ -356,3 +356,9 @@ jastipku-upgrade/ <-- Folder root
    
    - End-to-End (E2E) Testing (Frontend):
      Menggunakan Playwright. Fokus pada alur (flow) utama pengguna, seperti login, pencarian trip, pembuatan pesanan (lodge order), hingga proses konfirmasi pesanan (waybill status updates).
+
+8. Fase 6: Standar Paginasi (Wajib)
+   Mengingat data pesanan dan riwayat transaksi akan bertumbuh dengan sangat cepat, aplikasi Jastipku mewajibkan penggunaan **Cursor-Based Pagination** pada seluruh *endpoint list* (seperti `/trips` dan `/orders`).
+   - Setiap endpoint harus menerima properti DTO opsional `take` (untuk membatasi jumlah *records* per *request*, biasanya 10-20).
+   - Setiap endpoint harus menerima properti DTO opsional `cursor` (berupa ID terakhir dari respon sebelumnya).
+   - Backend memproses kueri `skip: 1` apabila `cursor` diberikan agar *record* referensi tidak ikut dikembalikan berulang kali.
