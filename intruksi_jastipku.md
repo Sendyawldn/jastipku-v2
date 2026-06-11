@@ -347,3 +347,12 @@ jastipku-upgrade/ <-- Folder root
 ├── jastipku-web/ <-- Repositori Frontend (Next.js)
 ├── jastipku-admin/ <-- Repositori Admin Panel (Next.js)
 └── docker-compose.yml <-- File Orkestrasi Utama
+
+7. Fase 5: Automated Testing Standards (Wajib)
+   Untuk memastikan keamanan transaksi dan fungsionalitas utama, sistem ini WAJIB mengimplementasikan standar pengujian otomatis:
+   
+   - Unit Testing (Backend):
+     Menggunakan Jest. Fokus utama pada fungsi-fungsi kritis seperti kalkulasi biaya (service fee, shipping fee), mutasi saldo (escrow release, withdrawals), dan cron jobs (auto-completion).
+   
+   - End-to-End (E2E) Testing (Frontend):
+     Menggunakan Playwright. Fokus pada alur (flow) utama pengguna, seperti login, pencarian trip, pembuatan pesanan (lodge order), hingga proses konfirmasi pesanan (waybill status updates).
