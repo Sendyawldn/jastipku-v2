@@ -1,19 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f9f9f9;
-  --color-ink: #111111;
-  --color-ink-muted: #666666;
-  --color-highlight: #ff5500;
-  --color-border-dark: #222222;
+  --color-primary: #533afd;
+  --color-ink: #0d253d;
+  --color-canvas: #ffffff;
+  --color-surface-soft: #f6f9fc;
+  --color-ruby: #ea2261;
+  --color-teal: #00c4b5;
   
-  --font-display: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-pill: 9999px;
+  
+  /* Shadows */
+  --shadow-level1: 0 1px 3px rgba(13,37,61,0.08);
+  --shadow-level2: 0 8px 24px rgba(13,37,61,0.08), 0 2px 6px rgba(13,37,61,0.04);
 }
 
 :root {
-  --background: var(--color-paper);
+  --background: var(--color-canvas);
   --foreground: var(--color-ink);
 }
 
@@ -27,6 +36,10 @@ body {
   color: var(--foreground);
   background-color: var(--background);
   font-family: var(--font-body);
+  /* The brand's typographic signature */
+  font-feature-settings: "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -34,13 +47,19 @@ a {
   text-decoration: none;
 }
 
-.tag-card {
-  border: 1px solid var(--color-border-dark);
-  background-color: #ffffff;
-  border-radius: 2px;
+/* Gradient mesh for heroes */
+.gradient-mesh {
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(28,100%,74%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(300,100%,86%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(248,98%,60%,1) 0, transparent 50%), 
+    radial-gradient(at 80% 50%, hsla(341,83%,53%,1) 0, transparent 50%);
+  background-color: #f5e9d4;
+  filter: blur(40px) opacity(0.8);
+  transform: translateZ(0);
 }
 
-.perforated-border {
-  border-bottom: 2px dashed var(--color-ink-muted);
+/* Tabular figures for money */
+.tnum {
+  font-feature-settings: "ss01", "tnum";
 }
-

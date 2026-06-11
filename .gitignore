@@ -15,6 +15,7 @@ mcp.json
 # generated app output
 **/node_modules/
 **/.next/
+**/.agent/
 **/dist/
 **/*.tsbuildinfo
 

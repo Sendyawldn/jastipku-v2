@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Inter, Anton, JetBrains_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const anton = Anton({ weight: "400", subsets: ["latin"], variable: "--font-anton" });
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
+const inter = Inter({ 
+  subsets: ["latin"], 
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-inter" 
+});
 
 export const metadata: Metadata = {
   title: "Jastipku",
@@ -18,7 +20,7 @@ export default function RootLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${anton.variable} ${mono.variable}`}>
+      <body className={`${inter.variable} font-light`}>
         {children}
       </body>
     </html>
