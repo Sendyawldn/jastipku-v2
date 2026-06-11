@@ -26,6 +26,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "latest",
     "@nestjs/platform-socket.io": "^11.1.24",
+    "@nestjs/swagger": "^11.4.4",
     "@nestjs/websockets": "^11.1.24",
     "@prisma/client": "latest",
     "bcrypt": "latest",
@@ -40,6 +41,7 @@
     "reflect-metadata": "latest",
     "rxjs": "latest",
     "socket.io": "^4.8.3",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^14.0.0"
   },
   "devDependencies": {
