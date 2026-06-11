@@ -19,6 +19,7 @@ import { NotificationsModule } from "./notifications/notifications.module";
 import { UploadsModule } from "./uploads/uploads.module";
 import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { APP_GUARD } from "@nestjs/core";
       ttl: 60000,
       limit: 100,
     }]),
+    ScheduleModule.forRoot(),
     BullModule.forRoot({
       redis: {
         host: "localhost", // Assuming docker-compose redis is mapped to localhost during dev
