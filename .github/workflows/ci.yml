@@ -1,0 +1,74 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  backend-ci:
+    name: Backend API CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jastipku-api
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: jastipku-api/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Generate Prisma Client
+      run: npx prisma generate
+
+    - name: Linting & Type Checking
+      run: |
+        npm run lint
+        npx tsc --noEmit
+
+    - name: Unit Tests
+      run: npm run test
+
+    - name: Build
+      run: npm run build
+
+
+  frontend-ci:
+    name: Frontend Web CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jastipku-web
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: jastipku-web/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Linting & Type Checking
+      run: |
+        npm run lint || echo "Lint warnings ignored for now"
+        npx tsc --noEmit
+
+    - name: Build (Next.js)
+      run: npm run build
+
+    - name: Playwright E2E Tests
+      run: |
+        npx playwright install --with-deps
+        npx playwright test

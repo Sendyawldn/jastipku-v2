@@ -362,3 +362,13 @@ jastipku-upgrade/ <-- Folder root
    - Setiap endpoint harus menerima properti DTO opsional `take` (untuk membatasi jumlah *records* per *request*, biasanya 10-20).
    - Setiap endpoint harus menerima properti DTO opsional `cursor` (berupa ID terakhir dari respon sebelumnya).
    - Backend memproses kueri `skip: 1` apabila `cursor` diberikan agar *record* referensi tidak ikut dikembalikan berulang kali.
+
+9. Fase 7: CI/CD Pipeline & Deployment Strategy (Wajib)
+   - **Target Deployment**:
+     - **Frontend (Web & Admin)**: Di-deploy ke **Vercel** untuk memaksimalkan performa Next.js SSR dan *Edge caching*.
+     - **Backend (API) & Database**: Di-deploy ke **Railway** (atau Render) menggunakan Docker untuk auto-scaling dan mempermudah orkestrasi infrastruktur *stateful* (PostgreSQL & Redis).
+   - **Pipeline CI/CD**: Menggunakan **GitHub Actions** (`.github/workflows/ci.yml`). Pipeline wajib memeriksa:
+     - **Linting** (`npm run lint`) & **Type Checking** (`tsc --noEmit`)
+     - **Testing** (Menjalankan Unit Test Jest & E2E Playwright)
+     - **Build** (Memastikan *build* produksi berhasil tanpa *error*)
+   Kode tidak boleh di-*merge* ke *branch* utama (`main`) sebelum proses CI ini lolos (*Passed*).
