@@ -1,155 +1,93 @@
-const tripHighlights = [
-  {
-    label: "Singapore",
-    route: "Jakarta → Singapore",
-    status: "Verified traveler, 2 active orders",
-  },
-  {
-    label: "Kuala Lumpur",
-    route: "Surabaya → Kuala Lumpur",
-    status: "1 order awaiting payment",
-  },
-  {
-    label: "Bangkok",
-    route: "Bandung → Bangkok",
-    status: "Processing, shipping next",
-  },
-];
+"use client";
 
-const orderStages = [
-  "Acceptance",
-  "Invoice",
-  "Purchase",
-  "Shipping",
-  "Completion",
-];
+import Link from "next/link";
+import { ArrowRight, PlaneTakeoff, ShieldCheck } from "lucide-react";
+import { motion } from "framer-motion";
 
-export default function HomePage() {
+export default function LandingPage() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8">
-      <header className="panel overflow-hidden px-5 py-6 sm:px-8 sm:py-8">
-        <div className="shell-grid lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--teal)]">
-              Jastipku Web
-            </p>
-            <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-[var(--ink)] sm:text-5xl">
-              Track the custody chain from traveler trip to delivered order.
-            </h1>
-            <p className="max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-base">
-              Customers discover verified traveler trips, place orders with
-              clear item detail, and watch payment, fulfillment, and receipt
-              confirmation unfold as one visible chain.
-            </p>
+    <div className="min-h-screen bg-[var(--background)] flex flex-col font-sans">
+      <header className="border-b-2 border-black bg-white">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="text-2xl font-black tracking-tighter uppercase font-display">
+            Jastipku <span className="text-[var(--color-highlight)]">///</span>
           </div>
-
-          <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-strong)] p-5">
-            <div className="flex items-center justify-between text-sm text-[var(--muted)]">
-              <span>Today&apos;s flow</span>
-              <span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--olive)]">
-                Live
-              </span>
-            </div>
-            <div className="mt-4 grid gap-3">
-              {orderStages.map((stage, index) => (
-                <div
-                  key={stage}
-                  className="flex items-center gap-3 rounded-2xl bg-white/85 px-4 py-3"
-                >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--ink)] text-xs font-semibold text-white">
-                    {index + 1}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-[var(--ink)]">
-                      {stage}
-                    </p>
-                    <p className="text-xs text-[var(--muted)]">
-                      Controlled handoff state
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="flex gap-4 font-mono text-sm uppercase">
+            <Link href="/login" className="px-4 py-2 hover:bg-black hover:text-white transition-colors border border-transparent">
+              Login
+            </Link>
+            <Link href="/register" className="px-4 py-2 border-2 border-black hover:bg-[var(--color-highlight)] hover:border-[var(--color-highlight)] transition-colors font-bold">
+              Register
+            </Link>
           </div>
         </div>
       </header>
 
-      <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-        <article className="panel px-5 py-5 sm:px-6">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">
-                Active trips
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold text-[var(--ink)]">
-                Verified traveler routes
-              </h2>
+      <main className="flex-1 flex flex-col max-w-5xl mx-auto w-full px-4 py-12 gap-12">
+        <section className="grid md:grid-cols-2 gap-8 items-center">
+          <div className="flex flex-col gap-6">
+            <div className="font-mono text-xs uppercase tracking-widest text-[var(--color-ink-muted)] flex items-center gap-2">
+              <span className="w-2 h-2 bg-black rounded-full animate-pulse" />
+              Manifest // Global Routing System
             </div>
-            <a className="text-sm font-medium text-[var(--teal)]" href="#">
-              Explore trips
-            </a>
-          </div>
-
-          <div className="mt-5 grid gap-3">
-            {tripHighlights.map((trip) => (
-              <div
-                key={trip.label}
-                className="rounded-[1.25rem] border border-[var(--border)] bg-white/80 px-4 py-4 transition-transform duration-200 hover:-translate-y-0.5"
+            <h1 className="text-5xl md:text-7xl font-display uppercase leading-[0.9] tracking-tight">
+              Trust the <br />
+              <span className="text-[var(--color-highlight)]">Delivery.</span>
+            </h1>
+            <p className="text-lg text-[var(--color-ink-muted)] max-w-md">
+              Peer-to-peer purchase assistance. Entrust your items to verified travelers. Clear routing, official manifests, zero ambiguity.
+            </p>
+            <div className="pt-4">
+              <Link
+                href="/explore"
+                className="inline-flex items-center gap-2 bg-black text-white px-6 py-4 font-mono uppercase font-bold hover:bg-[var(--color-highlight)] transition-colors"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--olive)]">
-                      {trip.label}
-                    </p>
-                    <p className="mt-1 text-base font-medium text-[var(--ink)]">
-                      {trip.route}
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-[rgba(15,118,110,0.1)] px-3 py-1 text-xs font-medium text-[var(--teal)]">
-                    Available
-                  </span>
-                </div>
-                <p className="mt-3 text-sm text-[var(--muted)]">
-                  {trip.status}
-                </p>
-              </div>
-            ))}
+                Explore Routes <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
-        </article>
 
-        <aside className="panel px-5 py-5 sm:px-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">
-            Order state
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold text-[var(--ink)]">
-            What the chain looks like
-          </h2>
-
-          <div className="mt-5 space-y-3">
-            {[
-              ["Waiting", "Accepted by traveler", "var(--ember)"],
-              ["In transit", "Payment cleared, items purchased", "var(--teal)"],
-              ["Done", "Customer confirmed receipt", "var(--olive)"],
-            ].map(([title, detail, color]) => (
-              <div
-                key={title}
-                className="rounded-[1.15rem] border border-[var(--border)] bg-white/80 px-4 py-4"
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className="h-3 w-3 rounded-full"
-                    style={{ background: `var(${color})` }}
-                  />
-                  <p className="text-sm font-semibold text-[var(--ink)]">
-                    {title}
-                  </p>
-                </div>
-                <p className="mt-2 text-sm text-[var(--muted)]">{detail}</p>
+          {/* Luggage Tag Mockup */}
+          <motion.div 
+            initial={{ rotate: -5, y: 20 }}
+            animate={{ rotate: 2, y: 0 }}
+            transition={{ type: "spring", stiffness: 100, damping: 10 }}
+            className="relative p-8 bg-white border-2 border-black max-w-sm mx-auto shadow-[8px_8px_0_0_#000]"
+          >
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full border-2 border-black bg-[var(--background)] flex items-center justify-center">
+               <div className="w-4 h-4 rounded-full bg-black"></div>
+            </div>
+            <div className="flex justify-between items-start border-b-2 border-dashed border-black pb-4 mb-4 mt-4">
+              <div className="font-mono text-sm">TAG NO: 4920-11</div>
+              <PlaneTakeoff className="w-6 h-6" />
+            </div>
+            <div className="flex gap-4 items-end mb-6">
+              <div className="flex-1">
+                <div className="text-[10px] uppercase font-mono mb-1">Origin</div>
+                <div className="text-4xl font-display uppercase">CGK</div>
               </div>
-            ))}
-          </div>
-        </aside>
-      </section>
-    </main>
+              <div className="pb-1 text-[var(--color-ink-muted)]">➔</div>
+              <div className="flex-1 text-right">
+                <div className="text-[10px] uppercase font-mono mb-1">Dest</div>
+                <div className="text-4xl font-display uppercase">NRT</div>
+              </div>
+            </div>
+            <div className="space-y-2 font-mono text-xs mb-8">
+              <div className="flex justify-between border-b border-gray-200 pb-1">
+                <span className="text-gray-500">TRAVELER</span>
+                <span className="font-bold flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-[var(--color-highlight)]"/> VERIFIED</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-200 pb-1">
+                <span className="text-gray-500">CAPACITY</span>
+                <span className="font-bold">15 KG</span>
+              </div>
+            </div>
+            <div className="bg-[var(--color-highlight)] text-black text-center py-2 font-display uppercase tracking-widest text-sm border border-black">
+              Status: Boarding
+            </div>
+          </motion.div>
+        </section>
+      </main>
+    </div>
   );
 }

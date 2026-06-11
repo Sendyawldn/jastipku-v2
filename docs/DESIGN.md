@@ -1,62 +1,48 @@
-# Design Contract
+# Jastipku UI Design System & Intent
 
-## UI Direction
+## 1. Design Intent and Product Personality
+Jastipku is a peer-to-peer delivery network built on trust and clear coordination. It is not an abstract e-commerce store; it is a human-driven logistics network. The personality is **Reliable, Structured, and Official**, prioritizing clear state communication over soft lifestyle aesthetics.
 
-The product should feel like a custody ledger tied to travel, not a generic dashboard shell.
+## 2. Audience and Use-Context Signals
+- **Customer**: High stakes (trusting a stranger with money and goods). Needs absolute transparency on status and whereabouts.
+- **Traveler**: Task-oriented. Needs clear instructions, easy-to-read manifests, and quick updates.
+- **Context**: Glance-and-go on mobile devices at airports, malls, or during transit.
 
-The customer app needs discovery, trust, and transaction clarity. The admin panel needs operational density and evidence. The traveler experience needs compact task progression and status changes.
+## 3. Visual Direction: Airline Luggage Tag & Waybill Manifest
+We are adopting the visual language of physical logistics artifacts: the **Luggage Tag** and the **Waybill Manifest**.
+- **Why?** It immediately communicates physical transfer, clear routing, identity verification, and structured data, completely escaping the generic "SaaS dashboard" or "lifestyle e-commerce" traps.
 
-## Conceptual Anchor
+## 4. Color, Typography, Spacing, and Density
+- **Color**: High-contrast monochrome (Ink Black `#111` on Paper White `#F9F9F9`) to mimic printed manifests. A single vibrant "Highlighter" color (e.g., Neon Orange `#FF5500` or Highlighter Yellow) used sparingly for critical status stamps and primary actions.
+- **Typography**: 
+  - *Display/Headers*: A bold, condensed Grotesk (e.g., Anton, Oswald, or Inter Tight) for routing cities (e.g., `CGK → NRT`) and prices.
+  - *Data/Metadata*: A Monospace font (e.g., JetBrains Mono, Roboto Mono) for order IDs, dates, weights.
+  - *Body*: Clean Sans-serif (Inter) for conversational text.
+- **Spacing/Density**: Structured with hard lines/borders (1px solid black) instead of drop shadows. High density for data tables, modular grids.
 
-- Anchor reference: custody chain ledger for trip-based purchases
-- Real-world signal: stamped travel manifests, receipt packets, and settlement trails
+## 5. Token Architecture
+- Uses OKLCH for predictable lightness curves.
+- `surface-base`, `surface-manifest`, `ink-primary`, `ink-secondary`, `highlight-marker`.
+- Hard borders (`border-ink`) replace soft elevation shadows.
 
-## Motion and Palette Decision
+## 6. Responsive Recomposition
+- **Mobile**: Single-column manifest. Sticky bottom action bar for status updates.
+- **Desktop**: Split-pane view. Left pane: Trip routing/details. Right pane: Order manifest list.
 
-- Motion: progression should feel like documents moving through a controlled handoff, with status transitions that expand from compact rows into focused detail views.
-- Palette: warm paper neutrals, graphite text, teal trust accents, ember risk accents, and olive progress accents.
-- Typographic contrast: section headings should feel editorial and decisive; body copy should stay neutral, compact, and highly legible.
+## 7. Motion, Interaction, and Feedback
+- **Signature Motion**: Mechanical unfolding (like a receipt printing out) for expanding details.
+- **Feedback**: "Stamping" impact animations when a status changes (e.g., `PENDING` stamped to `COMPLETED` with a slight scale-down impact).
 
-## Derived Token Logic
+## 8. Component Morphology
+- **Cards**: Sharp corners (0px or 2px radius), 1px solid dark borders. No drop shadows. Looks like a printed ticket or tag.
+- **Buttons**: Blocky, full-width on mobile, high-contrast hover states.
+- **Dividers**: Dashed or dotted lines mimicking tear-away perforations.
 
-- Use a calm surface base so status colors remain legible.
-- Use strong semantic colors for verification, payment, warning, and failure states.
-- Keep radius, spacing, and borders restrained on admin surfaces, but allow more spatial breathing room in the customer and traveler app.
-- Use layout changes between mobile and desktop rather than shrinking the same composition.
+## 9. Context Hygiene & Anti-Patterns
+- **Avoid**: Floating glassmorphism cards, soft pastel gradients, rounded pill-shaped buttons everywhere, generic spinner loaders.
+- **Avoid**: "SaaS Admin" layouts for the traveler view. It must feel like a task-manifest, not an enterprise dashboard.
 
-## Design Flexibility Policy
-
-- Lock product goals, accessibility, and interaction requirements.
-- Keep exact font families, radii, shadows, and final palette values open until the UI implementation pass.
-- Avoid generic dashboard composition, empty wallpaper texture, and copy-pasted component-kit skins.
-
-## AI-Safe UI Audit
-
-- Reject generic admin chrome.
-- Reject dashboard card grids that could belong to any product.
-- Reject decoration without a named interaction or information function.
-- Keep state changes visible for loading, empty, error, success, and stale data.
-
-## Design Execution Policy
-
-- Confirm the anchor before implementation.
-- Derive the composition from workflow, not from library defaults.
-- Keep mobile-first ordering different from desktop grouping when the flow benefits.
-
-## Design Execution Handoff
-
-- Customer app: discovery and order creation should be the primary narrative.
-- Traveler app: trip management and fulfillment should dominate the first view.
-- Admin app: verification, financial review, and exception handling should be the first-class paths.
-
-## Review Rubric
-
-- Three product-specific signals must be visible at a glance.
-- The layout should not rename cleanly into another product category.
-- Interaction states must remain understandable without color alone.
-
-## Context Hygiene
-
-- Use current repo evidence, current brief, and current docs.
-- Do not reuse old project visual memory unless the user asks for continuity.
-- Keep research vocabulary inside the contract and out of end-user copy.
+## 10. Accessibility Non-Negotiables
+- WCAG 2.2 AA Contrast for all text.
+- Form inputs must have clear, visible boundaries (no underline-only inputs).
+- Visible focus rings (`outline-offset: 2px`) for keyboard navigation.

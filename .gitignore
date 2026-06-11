@@ -19,3 +19,5 @@ mcp.json
 **/*.tsbuildinfo
 
 .kilo
+.intruksi_jastipku.md
+.env
