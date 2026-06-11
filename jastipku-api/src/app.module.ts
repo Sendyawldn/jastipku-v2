@@ -16,6 +16,7 @@ import { PaymentsModule } from "./payments/payments.module";
 import { LogisticsModule } from "./logistics/logistics.module";
 import { ChatModule } from "./chat/chat.module";
 import { NotificationsModule } from "./notifications/notifications.module";
+import { UploadsModule } from "./uploads/uploads.module";
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { NotificationsModule } from "./notifications/notifications.module";
     LogisticsModule,
     ChatModule,
     NotificationsModule,
+    UploadsModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],

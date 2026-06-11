@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import api from "../../../lib/axios";
+import { uploadToCloudStorage } from "../../../lib/upload";
 import { PackagePlus } from "lucide-react";
 import { useAuthStore } from "../../../store/authStore";
 
@@ -16,6 +17,7 @@ export default function TripDetail() {
   // Form Order
   const [itemName, setItemName] = useState("");
   const [itemUrl, setItemUrl] = useState("");
+  const [itemFile, setItemFile] = useState<File | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [weightKg, setWeightKg] = useState(1);
   const [price, setPrice] = useState(0);
@@ -37,10 +39,16 @@ export default function TripDetail() {
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      let productImageUrl = null;
+      if (itemFile) {
+        productImageUrl = await uploadToCloudStorage(itemFile);
+      }
+
       const res = await api.post("/orders", {
         tripId: Number(id),
         itemName,
         itemUrl,
+        productImageUrl,
         quantity,
         weightKg,
         price,
@@ -116,6 +124,11 @@ export default function TripDetail() {
                <div className="space-y-2">
                  <label className="font-mono text-[10px] uppercase text-[var(--color-ink-muted)]">Reference URL (Optional)</label>
                  <input type="url" className="w-full border border-black p-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-highlight)]" value={itemUrl} onChange={e => setItemUrl(e.target.value)} placeholder="https://..." />
+               </div>
+               
+               <div className="space-y-2">
+                 <label className="font-mono text-[10px] uppercase text-[var(--color-ink-muted)]">Product Photo (Optional)</label>
+                 <input type="file" accept="image/*" className="w-full border border-black p-2 font-mono text-sm file:mr-4 file:py-1 file:px-3 file:border file:border-black file:text-xs file:font-mono file:bg-black file:text-white hover:file:bg-[var(--color-highlight)] hover:file:text-black cursor-pointer" onChange={e => setItemFile(e.target.files?.[0] || null)} />
                </div>
                
                <div className="grid grid-cols-2 gap-4">
