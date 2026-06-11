@@ -370,5 +370,11 @@ jastipku-upgrade/ <-- Folder root
    - **Pipeline CI/CD**: Menggunakan **GitHub Actions** (`.github/workflows/ci.yml`). Pipeline wajib memeriksa:
      - **Linting** (`npm run lint`) & **Type Checking** (`tsc --noEmit`)
      - **Testing** (Menjalankan Unit Test Jest & E2E Playwright)
-     - **Build** (Memastikan *build* produksi berhasil tanpa *error*)
+   - **Build** (Memastikan *build* produksi berhasil tanpa *error*)
    Kode tidak boleh di-*merge* ke *branch* utama (`main`) sebelum proses CI ini lolos (*Passed*).
+
+10. Fase 8: Application Logging & Error Monitoring (Wajib)
+    - **Aplication Logging**:
+      Wajib menggunakan **Pino** (`nestjs-pino`) sebagai *logger* utama NestJS untuk menghasilkan format log terstruktur (JSON) dan *HTTP request logging* dengan *overhead* memori paling minim di lingkungan *production*.
+    - **Error Monitoring**:
+      Wajib mengintegrasikan **Sentry** (`@sentry/nestjs`) pada backend NestJS dan frontend Next.js. Semua *Uncaught Exceptions*, *Unhandled Rejections*, dan *HttpExceptions* tingkat 500+ harus secara otomatis ditangkap beserta *stack trace*-nya menuju dasbor Sentry.

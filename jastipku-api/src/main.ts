@@ -3,9 +3,27 @@ import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import cookieParser from "cookie-parser";
 import { AppModule } from "./app.module";
+import { BaseExceptionFilter, HttpAdapterHost } from "@nestjs/core";
+import { Logger } from 'nestjs-pino';
+import * as Sentry from '@sentry/nestjs';
+import { nodeProfilingIntegration } from '@sentry/profiling-node';
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN || "",
+  integrations: [
+    nodeProfilingIntegration(),
+  ],
+  tracesSampleRate: 1.0, 
+  profilesSampleRate: 1.0, 
+});
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  app.useLogger(app.get(Logger));
+
+  // Global Sentry Error Filter
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new BaseExceptionFilter(httpAdapter));
 
   app.use(cookieParser());
   
@@ -15,7 +33,7 @@ async function bootstrap() {
     : ['http://localhost:3000'];
     
   app.enableCors({
-    origin: (origin, callback) => {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
       // Allow requests with no origin (like mobile apps or curl requests)
       // For strictness, you can remove `!origin` if you strictly want browsers only.
       if (!origin || allowedOrigins.includes(origin)) {
